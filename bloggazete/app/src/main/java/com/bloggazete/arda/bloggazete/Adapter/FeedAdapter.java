@@ -3,6 +3,10 @@ package com.bloggazete.arda.bloggazete.Adapter;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
+import android.net.Uri;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -16,6 +20,7 @@ import com.bloggazete.arda.bloggazete.Model.RSSObject;
 import com.bloggazete.arda.bloggazete.R;
 import com.bumptech.glide.Glide;
 
+import java.util.List;
 
 
 /**
@@ -49,9 +54,8 @@ class FeedViewHolder extends RecyclerView.ViewHolder
 }
 public class FeedAdapter extends RecyclerView.Adapter<FeedViewHolder>{
     int[] itemSizeArray = new int[10];
-   String arrayText = String.valueOf(itemSizeArray);
     public RSSObject rssObject;
-    public Context mContext;
+    public final Context mContext;
     public LayoutInflater inflater;
 
 
@@ -70,13 +74,12 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedViewHolder>{
     }
 
     @Override
-    public void onBindViewHolder(FeedViewHolder holder, final int position) {
+    public void onBindViewHolder(final FeedViewHolder holder, final int position) {
         holder.txtTitle.setText(rssObject.getItems().get(position).getTitle());
         holder.txtPubDate.setText(rssObject.getItems().get(position).getPubDate());
         holder.txtAuthor.setText(rssObject.getItems().get(position).getAuthor());
         holder.txtContent.setText(rssObject.getItems().get(position).getContent());
-
-        holder.txtViewCount.setText(arrayText);
+        holder.txtViewCount.setText( "Viewed: 0");
        Glide.with(mContext)
                .asBitmap()
                .load(rssObject.getItems().get(position).getThumbnail())
@@ -86,9 +89,27 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedViewHolder>{
             @Override
             public void onClick(View view) {
                     itemSizeArray[position]++;
+                holder.txtViewCount.setText( "Viewed: "+itemSizeArray[position]);
 
-                    //Internet acmaya calistim fakat calismadi
-                /*Intent intent = new Intent(Intent.ACTION_VIEW,
+               /* Uri webpage = Uri.parse("http://www.android.com");
+                Intent webIntent = new Intent(Intent.ACTION_VIEW, webpage);
+
+
+                PackageManager packageManager = mContext.getPackageManager();
+                List<ResolveInfo> activities = packageManager.queryIntentActivities(webIntent,
+                        PackageManager.MATCH_DEFAULT_ONLY);
+                boolean isIntentSafe = activities.size() > 0;
+                if (isIntentSafe) {
+                    getApplicationContext().startActivity(webIntent);
+                }
+                else{
+                    holder.txtViewCount.setText( "FAILED "+itemSizeArray[position]);
+                }
+// Start an activity if it's safe
+
+
+
+                Intent intent = new Intent(Intent.ACTION_VIEW,
                         Uri.parse(rssObject.getItems().get(position).getLink()));
                 mContext.startActivity(intent);*/
             }
